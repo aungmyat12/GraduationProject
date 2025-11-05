@@ -135,14 +135,15 @@ public class CustomerSearchDBAccess {
 		ArrayList<Customer> list = new ArrayList<Customer>();
 		try{
 			if(con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, ADDRESS FROM customer WHERE tel=? AND kana=?";
+				String sql = "SELECT CUSTID, CUSTNAME, KANA, ADDRESS FROM customer WHERE TEL=? AND KANA LIKE ?";
 				pstmt = con.prepareStatement(sql);
 				pstmt.setString(1, tel);
-				pstmt.setString(2, kana);
+				pstmt.setString(2, "%" + kana + "%");
 				rs = pstmt.executeQuery();
 				while(rs.next() == true) {
 					int custId = rs.getInt("CUSTID");
 					String custName = rs.getString("CUSTNAME");
+					kana = rs.getString("KANA");
 					String address = rs.getString("ADDRESS");
 					Customer customer = new Customer(custId, custName, kana, tel, address);
 					list.add(customer);
