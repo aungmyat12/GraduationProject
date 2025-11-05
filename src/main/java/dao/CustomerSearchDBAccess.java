@@ -44,7 +44,7 @@ public class CustomerSearchDBAccess {
 		ArrayList<Customer> list = new ArrayList<Customer>();
 		try{
 			if(con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, ADDRESS FROM customer WHERE tel=?";
+				String sql = "SELECT CUSTID, CUSTNAME, KANA, ADDRESS FROM customer WHERE TEL=?";
 				pstmt = con.prepareStatement(sql);
 				pstmt.setString(1, tel);
 				rs = pstmt.executeQuery();
@@ -89,13 +89,14 @@ public class CustomerSearchDBAccess {
 		ArrayList<Customer> list = new ArrayList<Customer>();
 		try{
 			if(con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS FROM customer WHERE kana=?";
+				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS FROM customer WHERE KANA LIKE ?";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, kana);
+				pstmt.setString(1, "%" + kana + "%");
 				rs = pstmt.executeQuery();
 				while(rs.next() == true) {
 					int custId = rs.getInt("CUSTID");
 					String custName = rs.getString("CUSTNAME");
+					kana = rs.getString("KANA");
 					String tel = rs.getString("TEL");
 					String address = rs.getString("ADDRESS");
 					Customer customer = new Customer(custId, custName, kana, tel, address);
