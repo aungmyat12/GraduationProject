@@ -10,33 +10,35 @@ import java.util.ArrayList;
 import model.Customer;
 
 public class CustomerSearchDBAccess {
+	// DB接続を作成するメソッド
 	private Connection createConnection() throws Exception {
 		Connection con = null;
 		try{
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver"); // JDBCドライバをロード
 			con = DriverManager.getConnection(
 					"jdbc:mysql://localhost:65534/KIDDA_LA",
 					"user1",
-					"pass1");
+					"pass1"); // データベースへの接続を確立
 		} catch(ClassNotFoundException e) {
-			System.out.println("JDBCドライバが見つかりません。");
-			e.printStackTrace();
+			// JDBCドライバが見つからない場合のエラー
+			throw new Exception("JDBCドライバが見つかりません。", e);
 		} catch (SQLException e) {
-			System.out.println("DB接続時にエラーが発生しました。");
-			e.printStackTrace();
+			 // DB接続エラー
+			throw new Exception("DB接続時にエラーが発生しました。", e);
 		}
 		return con;
 	}
-	private void closeConnection(Connection con) {
+	// DB接続を閉じるメソッド
+	private void closeConnection(Connection con) throws Exception {
 		try{
-			if(con != null) {
+			if(con != null) { // 接続がnullでない場合、閉じる
 				con.close();
 			}
 		} catch(SQLException e) {
-			System.out.println("DB切断時にエラーが発生しました。");
-			e.printStackTrace();
+            throw new Exception("DB切断時にエラーが発生しました。"); // DB切断エラー
 		}
 	}
+	// 電話番号で顧客を検索するメソッド
 	public ArrayList<Customer> searchCustomerByTel(String tel) throws Exception {
 		Connection con = createConnection();
 		PreparedStatement pstmt = null;
@@ -44,44 +46,43 @@ public class CustomerSearchDBAccess {
 		ArrayList<Customer> list = new ArrayList<Customer>();
 		try{
 			if(con != null) {
-				String sql = "SELECT CUSTID, CUSTNAME, KANA, ADDRESS FROM customer WHERE TEL=?";
-				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, tel);
-				rs = pstmt.executeQuery();
+				String sql = "SELECT CUSTID, CUSTNAME, KANA, ADDRESS FROM customer WHERE TEL=?";  // SQL文の準備（プレースホルダを使う）
+				pstmt = con.prepareStatement(sql); // SQLクエリを実行するためのPreparedStatementを作成
+				pstmt.setString(1, tel); // プレースホルダに実際の電話番号をセット
+				rs = pstmt.executeQuery();  // SQLクエリを実行して、結果をResultSetに格納
 				while(rs.next() == true) {
 					int custId = rs.getInt("CUSTID");
 					String custName = rs.getString("CUSTNAME");
 					String kana = rs.getString("KANA");
 					String address = rs.getString("ADDRESS");
 					Customer customer = new Customer(custId, custName, kana, tel, address);
-					list.add(customer);
+					list.add(customer); // 検索結果をリストに追加
 				}
 			}
 		} catch(SQLException e) {
-			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
-			e.printStackTrace();
+			// DB接続エラー
+            throw new Exception("DB接続時にエラーが発生しました（電話番号検索）。", e);
 		} finally {
+			// ResultSetとPreparedStatementを閉じる
 			try{
 				if(rs != null) {
 					rs.close();
 				}
 			} catch(SQLException e) {
-				System.out.println("DB切断時にエラーが発生しました。");
-				e.printStackTrace();
+				throw new Exception("DB切断時にエラーが発生しました。", e);
 			}
 			try{
 				if(pstmt != null) {
 					pstmt.close();
 				}
 			} catch(SQLException e) {
-				System.out.println("DB切断時にエラーが発生しました。");
-				e.printStackTrace();
+				throw new Exception("DB切断時にエラーが発生しました。", e);
 			}
 		}
-		closeConnection(con);
+		closeConnection(con); // DB接続を閉じる
 		return list;
 	}
+	// 氏名カナで顧客を検索するメソッド
 	public ArrayList<Customer> searchCustomerByKana(String kana) throws Exception {
 		Connection con = createConnection();
 		PreparedStatement pstmt = null;
@@ -91,43 +92,40 @@ public class CustomerSearchDBAccess {
 			if(con != null) {
 				String sql = "SELECT CUSTID, CUSTNAME, KANA, TEL, ADDRESS FROM customer WHERE KANA LIKE ?";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, "%" + kana + "%");
+				pstmt.setString(1, "%" + kana + "%"); // 部分探しのLIKEを使う("%"は0文字以上の任意の文字列)
 				rs = pstmt.executeQuery();
 				while(rs.next() == true) {
 					int custId = rs.getInt("CUSTID");
 					String custName = rs.getString("CUSTNAME");
-					kana = rs.getString("KANA");
+					String rs_kana = rs.getString("KANA");
 					String tel = rs.getString("TEL");
 					String address = rs.getString("ADDRESS");
-					Customer customer = new Customer(custId, custName, kana, tel, address);
+					Customer customer = new Customer(custId, custName, rs_kana, tel, address);
 					list.add(customer);
 				}
 			}
 		} catch(SQLException e) {
-			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
-			e.printStackTrace();
+			throw new Exception("DB接続時にエラーが発生しました（商品検索）。", e);
 		} finally {
 			try{
 				if(rs != null) {
 					rs.close();
 				}
 			} catch(SQLException e) {
-				System.out.println("DB切断時にエラーが発生しました。");
-				e.printStackTrace();
+				throw new Exception("DB切断時にエラーが発生しました。", e);
 			}
 			try{
 				if(pstmt != null) {
 					pstmt.close();
 				}
 			} catch(SQLException e) {
-				System.out.println("DB切断時にエラーが発生しました。");
-				e.printStackTrace();
+				throw new Exception("DB切断時にエラーが発生しました。", e);
 			}
 		}
 		closeConnection(con);
 		return list;
 	}
+	// 電話番号と氏名カナ両方で顧客を検索するメソッド
 	public ArrayList<Customer> searchCustomer(String tel, String kana) throws Exception {
 		Connection con = createConnection();
 		PreparedStatement pstmt = null;
@@ -150,25 +148,21 @@ public class CustomerSearchDBAccess {
 				}
 			}
 		} catch(SQLException e) {
-			System.out.println(
-					"DB切断時にエラーが発生しました（商品検索）。");
-			e.printStackTrace();
+			throw new Exception("DB接続時にエラーが発生しました（商品検索）。", e);
 		} finally {
 			try{
 				if(rs != null) {
 					rs.close();
 				}
 			} catch(SQLException e) {
-				System.out.println("DB切断時にエラーが発生しました。");
-				e.printStackTrace();
+				throw new Exception("DB切断時にエラーが発生しました。", e);
 			}
 			try{
 				if(pstmt != null) {
 					pstmt.close();
 				}
 			} catch(SQLException e) {
-				System.out.println("DB切断時にエラーが発生しました。");
-				e.printStackTrace();
+				throw new Exception("DB切断時にエラーが発生しました。", e);
 			}
 		}
 		closeConnection(con);

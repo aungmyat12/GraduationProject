@@ -1,10 +1,10 @@
 /**
  * クラス名：	Customer
  * 概要　　：	顧客情報
- * 作成者名：
- * 作成日　：
- * 修正者名：
- * 修正日　：
+ * 作成者名：   ウー
+ * 作成日　：   2025/10/31
+ * 修正者名：   ウー
+ * 修正日　：   2025/11/05
  */
 
 package model;
@@ -17,18 +17,19 @@ public class Customer implements Serializable {
 	private String kana;     //カナ
 	private String tel;      //電話番号
 	private String address;  //住所
+	public Customer() {}
 	public Customer(int custId, String custName, String kana, String tel, String address) {
-		this.custId = custId; // setCustId(custId);
-		this.custName = custName; // setCustName(custName);
-		this.kana = kana; // setKana(kana);
-		this.tel = tel; // setTel(tel);
-		this.address = address; // setAddress(address);
+		setCustId(custId); // custId属性に記録する
+		setCustName(custName); // custName属性に記録する
+		setKana(kana); // kana属性に記録する
+		setTel(tel); // tel属性に記録する
+		setAddress(address); // address属性に記録する
 	}
 
-	public int getCustId() {
+	public int getCustId() { // 属性はprivateで直接アクセスできないからgetを使ってアクセスする
 		return custId;
 	}
-	public void setCustId(int custId) {
+	public void setCustId(int custId) { // 属性を記録するために使う
 		this.custId = custId;
 	}
 
