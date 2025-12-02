@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import model.Customer;
 
 public class CustomerSearchDBAccess {
-	// DB接続を作成するメソッド
 	private Connection createConnection() throws Exception {
 		Connection con = null;
 		try{
@@ -24,12 +23,12 @@ public class CustomerSearchDBAccess {
 			throw new Exception("JDBCドライバが見つかりません。", e);
 		} catch (SQLException e) {
 			 // DB接続エラー
-			throw new Exception("DB接続時にエラーが発生しました。", e);
+			throw new Exception("DB接続処理に失敗しました！管理者に連絡してください。", e);
 		}
 		return con;
 	}
-	// DB接続を閉じるメソッド
-	private void closeConnection(Connection con) throws Exception {
+
+	private void closeConnection(Connection con)  throws Exception {
 		try{
 			if(con != null) { // 接続がnullでない場合、閉じる
 				con.close();
@@ -61,7 +60,7 @@ public class CustomerSearchDBAccess {
 			}
 		} catch(SQLException e) {
 			// DB接続エラー
-            throw new Exception("DB接続時にエラーが発生しました（電話番号検索）。", e);
+			throw new Exception("DB接続処理に失敗しました！管理者に連絡してください。", e);
 		} finally {
 			// ResultSetとPreparedStatementを閉じる
 			try{
@@ -105,7 +104,7 @@ public class CustomerSearchDBAccess {
 				}
 			}
 		} catch(SQLException e) {
-			throw new Exception("DB接続時にエラーが発生しました（商品検索）。", e);
+			throw new Exception("DB接続処理に失敗しました！管理者に連絡してください。", e);
 		} finally {
 			try{
 				if(rs != null) {
@@ -148,7 +147,7 @@ public class CustomerSearchDBAccess {
 				}
 			}
 		} catch(SQLException e) {
-			throw new Exception("DB接続時にエラーが発生しました（商品検索）。", e);
+			throw new Exception("DB接続処理に失敗しました！管理者に連絡してください。", e);
 		} finally {
 			try{
 				if(rs != null) {
