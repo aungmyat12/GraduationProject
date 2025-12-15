@@ -10,8 +10,8 @@ public class CustomerSearchAction {
 
 	public String[][] execute(String[] data) throws Exception {
 		String[][] customerData = new String[0][0]; // お客様の配列を作る
-		data[0] = data[0].trim(); // 電話番号の空白の削除
-		data[1] = data[1].trim(); // 氏名カナの空白の削除
+		data[0] = data[0].replaceAll("[\\s　]+", "").trim();
+		data[1] = data[1].replaceAll("[\\s　]+", "").trim();
 		ArrayList<Customer> list = new ArrayList<Customer>(); // リストを作成
 		CustomerSearchDBAccess dao = new CustomerSearchDBAccess(); // メソッドを呼び出すためのインスタンス化
 		if (!data[0].isEmpty() && data[1].isEmpty()) { // 電話番号のみ入力された場合の処理

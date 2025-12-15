@@ -14,32 +14,51 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ControlDBAccess {
+	/**
+     * データベースへの接続を作成して返すメソッド
+     * 
+     * return Connection 接続オブジェクト
+     * throws Exception 接続に失敗した場合の例外
+     */
+    protected Connection createConnection() throws Exception {
+        Connection con = null;
+        try {
+            // JDBC ドライバをロード（MySQL 用）
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
-	protected Connection createConnection() throws Exception {
-		Connection con = null;
-		try{
-			Class.forName("com.mysql.cj.jdbc.Driver"); // JDBCドライバをロード
-			con = DriverManager.getConnection(
-					"jdbc:mysql://localhost:65534/KIDDA_LA",
-					"user1",
-					"pass1"); // データベースへの接続を確立
-		} catch(ClassNotFoundException e) {
-			// JDBCドライバが見つからない場合のエラー
-			throw new Exception("JDBCドライバが見つかりません。", e);
-		} catch (SQLException e) {
-			 // DB接続エラー
-			throw new Exception("DB接続処理に失敗しました！管理者に連絡してください。", e);
-		}
-		return con;
-	}
+            // データベースへ接続
+            con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:65534/KIDDA_LA",  // 接続先URL
+                    "user1",                                  // ユーザー名
+                    "pass1"                                   // パスワード
+            );
 
-	protected void closeConnection(Connection con)  throws Exception {
-		try{
-			if(con != null) { // 接続がnullでない場合、閉じる
-				con.close();
-			}
-		} catch(SQLException e) {
-            throw new Exception("DB切断時にエラーが発生しました。"); // DB切断エラー
-		}
-	}
+        } catch (ClassNotFoundException e) {
+            // JDBCドライバが見つからなかった場合
+            throw new Exception("JDBCドライバが見つかりません。", e);
+
+        } catch (SQLException e) {
+            // DB接続に失敗した場合
+            throw new Exception("DB接続処理に失敗しました！管理者に連絡してください。", e);
+        }
+
+        return con;
+    }
+
+    /**
+     * DB接続を安全に切断するメソッド
+     * 
+     * パラメータ con 閉じる対象の Connection オブジェクト
+     * throws Exception 切断時にエラーが発生した場合
+     */
+    protected void closeConnection(Connection con) throws Exception {
+        try {
+            if (con != null) { // 接続が確立されている場合のみ閉じる
+                con.close();
+            }
+        } catch (SQLException e) {
+            // 切断時のエラー
+            throw new Exception("DB切断時にエラーが発生しました。", e);
+        }
+    }
 }

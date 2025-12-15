@@ -1,7 +1,6 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,34 +8,7 @@ import java.util.ArrayList;
 
 import model.Customer;
 
-public class CustomerSearchDBAccess {
-	private Connection createConnection() throws Exception {
-		Connection con = null;
-		try{
-			Class.forName("com.mysql.cj.jdbc.Driver"); // JDBCドライバをロード
-			con = DriverManager.getConnection(
-					"jdbc:mysql://localhost:65534/KIDDA_LA",
-					"user1",
-					"pass1"); // データベースへの接続を確立
-		} catch(ClassNotFoundException e) {
-			// JDBCドライバが見つからない場合のエラー
-			throw new Exception("JDBCドライバが見つかりません。", e);
-		} catch (SQLException e) {
-			 // DB接続エラー
-			throw new Exception("DB接続処理に失敗しました！管理者に連絡してください。", e);
-		}
-		return con;
-	}
-
-	private void closeConnection(Connection con)  throws Exception {
-		try{
-			if(con != null) { // 接続がnullでない場合、閉じる
-				con.close();
-			}
-		} catch(SQLException e) {
-            throw new Exception("DB切断時にエラーが発生しました。"); // DB切断エラー
-		}
-	}
+public class CustomerSearchDBAccess extends ControlDBAccess{
 	// 電話番号で顧客を検索するメソッド
 	public ArrayList<Customer> searchCustomerByTel(String tel) throws Exception {
 		Connection con = createConnection();
