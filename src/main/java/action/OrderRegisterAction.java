@@ -23,17 +23,6 @@ public class OrderRegisterAction {
 	 * throws Exception 登録または検索処理に失敗した場合
 	 */
 	public ArrayList<OrderDetail> execute(ArrayList<OrderDetail> orderDetailList) throws Exception {
-		for (OrderDetail od : orderDetailList) {
-		    if (od.getCustomer() == null ||
-		        od.getCustomer().getCustId() <= 0 ||
-		        od.getItem() == null ||
-				od.getItem().getItemId() == null ||
-				od.getOrderDate() == null ||
-		        od.getQuantity() <= 0		        
-		        ) {
-		        throw new IllegalArgumentException("注文データが不正です");
-		    }
-		}
 	    // 現在有効な消費税率を取得
 	    TaxSearchDBAccess taxDao = new TaxSearchDBAccess();
 	    Tax tax = taxDao.searchCurrentTax();

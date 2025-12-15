@@ -24,19 +24,21 @@ public class OrderRegisterDBAccess extends ControlDBAccess {
 	 * throws Exception 登録処理に失敗した場合
 	 */
 	public void registerOrder(ArrayList<OrderDetail> orderDetailList) throws Exception {
-		for (OrderDetail od : orderDetailList) {
-		    if (od.getCustomer() == null ||
-		        od.getCustomer().getCustId() <= 0 ||
-		        od.getItem() == null ||
-				od.getItem().getItemId() == null ||
-				od.getOrderDate() == null ||
-		        od.getQuantity() <= 0 ||
-		        od.getTax() ==  null ||
-		        od.getTax().getTaxId() <= 0       
-		        ) {
-		        throw new IllegalArgumentException("注文データが不正です");
-		    }
-		}
+//		if (orderDetailList.size() >= 1) {
+//			for (OrderDetail od : orderDetailList) {
+//			    if (od.getCustomer() == null ||
+//			        od.getCustomer().getCustId() <= 0 ||
+//			        od.getItem() == null ||
+//					od.getItem().getItemId() == null ||
+//					od.getOrderDate() == null ||
+//			        od.getQuantity() <= 0 ||
+//			        od.getTax() ==  null ||
+//			        od.getTax().getTaxId() <= 0       
+//			        ) {
+//			        throw new IllegalArgumentException("注文データが不正です");
+//			    }
+//			}
+//		}
 	    // DB接続の確立
 	    Connection con = createConnection();
 
