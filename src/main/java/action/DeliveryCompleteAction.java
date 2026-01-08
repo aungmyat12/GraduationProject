@@ -8,10 +8,13 @@
  */
 package action;
 
+import dao.DeliveryCompleteDBAccess;
+
 public class DeliveryCompleteAction {
 	
 	public int execute(int custId) throws Exception {
-
-		return 0;
+		DeliveryCompleteDBAccess dao = new DeliveryCompleteDBAccess();
+		int result = dao.completeDeliveryByCustId(custId);
+		return result;
 	}
 }
