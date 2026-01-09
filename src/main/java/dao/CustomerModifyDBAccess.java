@@ -38,10 +38,6 @@ public class CustomerModifyDBAccess extends ControlDBAccess {
 			pstmt.setInt(5, customer.getCustId());
 			// SQL実行（更新）
 			count = pstmt.executeUpdate();
-			// 更新件数が0件の場合（対象データなし）
-			if (count == 0) {
-			    throw new Exception("更新対象の顧客が存在しません。");
-			}
 		} catch (SQLException e) {
 			// SQL例外発生時は業務用例外として再スロー
 			throw new Exception("顧客情報更新処理に失敗しました！管理者に連絡してください。", e);
