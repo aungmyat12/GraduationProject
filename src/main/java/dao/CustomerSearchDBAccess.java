@@ -32,7 +32,7 @@ public class CustomerSearchDBAccess extends ControlDBAccess{
 			}
 		} catch(SQLException e) {
 			// DB接続エラー
-			throw new Exception("DB接続処理に失敗しました！管理者に連絡してください。", e);
+			throw new Exception("顧客検索処理に失敗しました！管理者に連絡してください。", e);
 		} finally {
 			// ResultSetとPreparedStatementを閉じる
 			try{
