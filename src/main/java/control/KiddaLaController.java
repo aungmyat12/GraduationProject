@@ -27,13 +27,20 @@ import action.CustomerModifyAction;
 import action.CustomerSearchAction;
 import action.DeliveryCompleteAction;
 import action.DeliveryConfirmAction;
+import action.ItemAddAction;
+import action.ItemControlAction;
+import action.ItemDeleteAction;
+import action.ItemInputDisplayAction;
 import action.ItemMenuDisplayAction;
+import action.ItemModifyAction;
 import action.OrderInputDisplayAction;
 import action.OrderRegisterAction;
+import action.RegisterAction;
 import model.Customer;
 import model.Item;
 import model.OrderControlUtility;
 import model.OrderDetail;
+import model.User;
 
 @WebServlet("/KiddaLaController")
 public class KiddaLaController extends HttpServlet {
@@ -66,6 +73,44 @@ public class KiddaLaController extends HttpServlet {
 			// 次画面に"MainMenu.jsp"を設定する
 			nextPage = "MainMenu.jsp";
 			break;
+		case "RegisterDisplay":
+			// 次画面に Register.jsp を設定
+			nextPage = "Register.jsp";
+			break;
+			
+		case "Register":
+			try {
+				// 次画面
+				nextPage = "Login.jsp";
+
+				// リクエストパラメータ取得
+				String name = request.getParameter("name");
+				String email = request.getParameter("email");
+				String password = request.getParameter("password");
+
+				// User オブジェクト生成
+				User user = new User(name, email, password);
+
+				// RegisterAction 実行
+				RegisterAction registerAction = new RegisterAction();
+				int result = registerAction.execute(user);
+
+				session = request.getSession();
+				if (result == 1) {
+				    request.setAttribute("msgFlag", "registered");
+				    nextPage = "Login.jsp";  // forward OK
+				} else {
+				    request.setAttribute("errorMsg",
+				        result == -1 ? "このメールアドレスはすでに登録されています。" : "登録に失敗しました。");
+				    request.setAttribute("userInput", user);  // requestスコープに入れる
+				    nextPage = "Register.jsp";  // forward
+				}
+			} catch (Exception e) {
+				request.setAttribute("errorMsg", e.getMessage());
+				nextPage = "Error.jsp";
+			}
+			break;
+		
 		case "CustomerSearchDisplay":
 			// 次画面に"CustomerSearch.jsp"を設定する
 			nextPage = "CustomerSearch.jsp";
@@ -317,6 +362,149 @@ public class KiddaLaController extends HttpServlet {
 				nextPage = "Error.jsp";
 			}
 			break;
+		case "ItemControlDisplay":
+		    try {
+		        nextPage = "ItemControl.jsp";
+
+		        String itemId = request.getParameter("itemId");
+
+		        if (itemId != null) {
+		            // 編集モード
+		            ItemInputDisplayAction action =
+		                    new ItemInputDisplayAction();
+
+		            Item item = action.execute(itemId);
+
+		            request.setAttribute("item", item);
+		            request.setAttribute("mode", "edit"); // ★追加
+		        } else {
+		            // 新規登録モード
+		            request.setAttribute("mode", "add"); // ★追加
+		        }
+
+		        ItemControlAction itemControlAction =
+		                new ItemControlAction();
+
+		        String[][] itemData = itemControlAction.execute();
+		        request.setAttribute("itemData", itemData);
+
+		        session = request.getSession();
+		        if (session != null) {
+		            String msgFlag = (String) session.getAttribute("msgFlag");
+		            if (msgFlag != null) {
+		                request.setAttribute("msgFlag", msgFlag);
+		                session.removeAttribute("msgFlag");
+		            }
+		        }
+
+		    } catch (Exception e) {
+		        request.setAttribute("errorMsg", e.getMessage());
+		        nextPage = "Error.jsp";
+		    }
+		    break;
+		case "ItemAdd":
+		    try {
+		        // 入力値取得
+		        String itemId   = request.getParameter("itemId");
+		        String itemName = request.getParameter("itemName");
+		        String size     = request.getParameter("size");
+		        int price       = Integer.parseInt(request.getParameter("price"));
+
+		        int userId = 1;
+
+		        Item item = new Item(itemId, itemName, size, price, userId);
+
+		        ItemAddAction action = new ItemAddAction();
+		        int result = action.execute(item);
+
+		        if (result == 1) {
+		            session = request.getSession();
+		            session.setAttribute("msgFlag", "created");
+
+		            // 成功時のみ redirect
+		            response.sendRedirect(
+		                "KiddaLaController?command=ItemControlDisplay");
+		            return;
+
+		        } else if (result == -1) {
+		            // ★ 重複エラー
+		            request.setAttribute("errorMsg", "この商品IDはすでに登録されています。");
+		            request.setAttribute("item", item);
+		            request.setAttribute("mode", "add");
+
+		            // ★ Display に forward
+		            nextPage = "KiddaLaController?command=ItemControlDisplay";
+		        }
+
+		    } catch (Exception e) {
+		        request.setAttribute("errorMsg", e.getMessage());
+		        nextPage = "Error.jsp";
+		    }
+		    break;
+		case "ItemModify":
+		    try {
+		        String itemId = request.getParameter("itemId");
+		        String itemName = request.getParameter("itemName");
+		        String size = request.getParameter("size");
+		        int price = Integer.parseInt(request.getParameter("price"));
+
+		        session = request.getSession();
+
+		        Item item = new Item(itemId, itemName, size, price);
+
+		        ItemModifyAction action = new ItemModifyAction();
+		        int result = action.execute(item);
+
+		        if (result == 1) {
+		            session.setAttribute("msgFlag", "modified");
+
+		            nextPage = "KiddaLaController?command=ItemControlDisplay";
+		            return;
+
+		        }  else {
+		            request.setAttribute("errorMsg", "商品情報の更新に失敗しました。");
+		            request.setAttribute("item", item);
+		            nextPage = "ItemControl.jsp";
+		        }
+
+		    } catch (Exception e) {
+		        request.setAttribute("errorMsg", e.getMessage());
+		        nextPage = "Error.jsp";
+		    }
+		    break;
+		case "ItemDelete":
+		    try {
+		        // 遷移先は商品管理画面
+		        nextPage = "ItemControl.jsp";
+
+		        // 削除対象の商品IDを取得
+		        String itemId = request.getParameter("itemId");
+
+		        // 商品削除Action生成
+		        ItemDeleteAction action = new ItemDeleteAction();
+
+		        // 削除実行
+		        int result = action.execute(itemId);
+
+		        session = request.getSession();
+		        if (result == 1) {
+		            // 削除成功
+		            session.setAttribute("msgFlag", "deleted");
+
+		            // PRGパターン
+		            response.sendRedirect(
+		                "KiddaLaController?command=ItemControlDisplay");
+		            return;
+		        } else {
+		            // 削除失敗
+		            request.setAttribute("errorMsg", "商品削除に失敗しました。");
+		        }
+
+		    } catch (Exception e) {
+		        request.setAttribute("errorMsg", e.getMessage());
+		        nextPage = "Error.jsp";
+		    }
+		    break;
 
 		case "CustomerAdd":
 			try {

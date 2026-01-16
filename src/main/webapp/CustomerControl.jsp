@@ -5,7 +5,6 @@
 	Customer cust = (Customer)request.getAttribute("customer");
 	@SuppressWarnings("unchecked")
 	String[][] customerData = (String[][]) request.getAttribute("customerData");
-	String errorMsg = (String)request.getAttribute("errorMsg");
 	String msgFlag = (String)request.getAttribute("msgFlag");
 %>
 <!DOCTYPE html>
@@ -84,6 +83,16 @@
 	}
 
     window.onload = function() {
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if(!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
         adjustFooter();
 		<% if(msgFlag != null && msgFlag.equals("modified")) { %>
 			showModalConfirm("【顧客情報変更完了】", "顧客情報を更新しました。", "info");

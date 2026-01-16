@@ -14,6 +14,17 @@
 </head>
 
 <body class="d-flex h-100 text-center text-dark">
+	<div class="position-fixed top-0 end-0 m-3">
+		<form action="KiddaLaController" method="post" class="d-inline">
+			<input type="hidden" name="command" value="LoginDisplay">
+			<button class="btn btn-primary me-2">ログイン</button>
+		</form>
+	
+		<form action="KiddaLaController" method="post" class="d-inline">
+			<input type="hidden" name="command" value="RegisterDisplay">
+			<button class="btn btn-warning">新規登録</button>
+		</form>
+	</div>
 	<div class="d-flex w-100 mx-auto flex-column">
 		<header class="mb-auto">
 			<p class="fs-1 mt-2 mb-1">KIDDA-LA 業務システム</p>

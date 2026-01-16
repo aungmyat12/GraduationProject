@@ -14,6 +14,7 @@ public class Item {
 	private String itemName; // 商品名
 	private String size; // 商品のサイズ
 	private int price; // 商品の単価
+	private int userId;
 	public Item() {}
 	// コンストラクタ：インスタンス生成時に各情報をセットする
 	public Item(String itemId, String itemName, String size, int price) {
@@ -21,6 +22,14 @@ public class Item {
 		setItemName(itemName);	// itemName属性に記録する
 		setSize(size);	// size属性に記録する
 		setPrice(price);	// price属性に記録する
+	}
+	// コンストラクタ：インスタンス生成時に各情報をセットする
+	public Item(String itemId, String itemName, String size, int price, int userId) {
+		setItemId(itemId);	// itemId属性に記録する
+		setItemName(itemName);	// itemName属性に記録する
+		setSize(size);	// size属性に記録する
+		setPrice(price);	// price属性に記録する
+		setUserId(userId);
 	}
 	// -------------------------
     // setter / getter メソッド
@@ -59,6 +68,15 @@ public class Item {
 	// price を取得する
 	public int getPrice() {
 		return price;
+	}
+
+	 // userId をセットする
+	public void setUserId(int userId) {	
+		this.userId = userId;	
+	}
+	// userId を取得する
+	public int getUserId() {	
+		return userId;
 	}
 
 }
