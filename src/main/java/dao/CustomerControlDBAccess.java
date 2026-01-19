@@ -1,3 +1,11 @@
+/**
+ * クラス名：	CustomerControlDBAccess
+ * 概要　　：	顧客情報管理DAO
+ * 作成者名：	ウー
+ * 作成日　：	2026/01/15
+ * 修正者名：	
+ * 修正日　：
+ */
 package dao;
 
 import java.sql.Connection;

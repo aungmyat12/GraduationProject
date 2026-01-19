@@ -1,8 +1,8 @@
 /**
- * クラス名：	CustomerModifyAction
- * 概要　　：	顧客情報変更アクション
- * 作成者名：	藤代
- * 作成日　：	2026/01/09
+ * クラス名：	RegisterAction
+ * 概要　　：	ユーザ登録するアクション
+ * 作成者名：	ウー
+ * 作成日　：	2026/01/19
  * 修正者名：
  * 修正日　：
  */
@@ -15,7 +15,7 @@ import model.User;
 
 public class RegisterAction {
 	/*
-	 * param customer 登録する顧客情報
+	 * param user 登録する顧客情報
 	 * return 登録件数
 	 * throws 登録情報の未発見
 	 */

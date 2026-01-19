@@ -1,3 +1,11 @@
+/**
+ * クラス名：	ItemModifyAction
+ * 概要　　：	商品情報表示アクション
+ * 作成者名：	ウー	
+ * 作成日　：	2025/01/16
+ * 修正者名：
+ * 修正日　：
+ */
 package action;
 
 import dao.ItemModifyDBAccess;

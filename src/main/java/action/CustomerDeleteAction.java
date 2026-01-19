@@ -1,8 +1,8 @@
 /**
- * クラス名：	CustomerModifyAction
+ * クラス名：	CustomerDeleteAction
  * 概要　　：	顧客情報変更アクション
- * 作成者名：	藤代
- * 作成日　：	2026/01/09
+ * 作成者名：	ウー
+ * 作成日　：	2026/01/15
  * 修正者名：
  * 修正日　：
  */
@@ -12,7 +12,7 @@ import dao.CustomerDeleteDBAccess;
 
 public class CustomerDeleteAction {
 	/*
-	 * param customer 削除する顧客情報
+	 * param custId 削除する顧客ID
 	 * return 削除件数
 	 * throws 削除情報の未発見
 	 */

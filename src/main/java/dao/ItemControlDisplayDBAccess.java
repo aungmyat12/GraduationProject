@@ -1,8 +1,8 @@
 /**
- * クラス名：	ItemMenuDisplayDBAccess
+ * クラス名：	ItemControlDisplayDBAccess
  * 概要　　：	商品情報表示DAO
  * 作成者名：	ウー
- * 作成日　：	2025/12/02
+ * 作成日　：	2025/01/16
  * 修正者名：	
  * 修正日　：
  */

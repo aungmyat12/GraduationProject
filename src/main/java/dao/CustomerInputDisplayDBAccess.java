@@ -1,8 +1,8 @@
 /**
- * クラス名：	OrderInputDisplayDBAccess
- * 概要　　：	注文情報入力画面表示DAO
+ * クラス名：	CustomerInputDisplayDBAccess
+ * 概要　　：	顧客情報入力画面表示DAO
  * 作成者名：	ウー
- * 作成日　：   2025/12/02
+ * 作成日　：   2025/01/15
  * 修正者名：   
  * 修正日　：
  */

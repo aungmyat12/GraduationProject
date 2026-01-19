@@ -1,8 +1,8 @@
 /**
  * クラス名：	ItemAddAction
  * 概要　　：	商品追加アクション
- * 作成者名：	加藤蒼唯
- * 作成日　：	2026/01/15
+ * 作成者名：	ウー
+ * 作成日　：	2026/01/16
  * 修正者名：
  * 修正日　：
  */
@@ -19,7 +19,6 @@ public class ItemAddAction {
 	 */
 	public int execute(Item item) throws Exception {
 		
-		//顧客情報新規DAOの生成
 		ItemAddDBAccess iaDAO = new ItemAddDBAccess();
 		if (iaDAO.existsItemId(item.getItemId())) {
             return -1; // 既に存在

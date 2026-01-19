@@ -1,3 +1,11 @@
+/**
+ * クラス名：	CustomerControlAction
+ * 概要　　：	顧客情報登録アクション
+ * 作成者名：	ウー	
+ * 作成日　：	2026/01/14
+ * 修正者名：
+ * 修正日　：
+ */
 package action;
 
 import java.util.ArrayList;

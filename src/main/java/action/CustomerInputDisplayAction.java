@@ -1,8 +1,8 @@
 /**
- * クラス名：	OrderInputDisplayAction
- * 概要　　：	注文情報入力画面表示アクション
+ * クラス名：	CustomerInputDisplayAction
+ * 概要　　：	顧客情報表示アクション
  * 作成者名：	ウー
- * 作成日　：	2025/12/02
+ * 作成日　：	2025/1/15
  * 修正者名：
  * 修正日　：
  */
@@ -14,7 +14,7 @@ import model.Customer;
 
 public class CustomerInputDisplayAction {
 	/**
-     * 指定された顧客IDをもとに顧客情報を取得して返すメソッド
+     * 指定されたcustIdをもとに顧客情報を取得して返すメソッド
      *
      * param custId 文字列で渡された顧客ID
      * return Customer オブジェクト（該当顧客が存在すればその情報）

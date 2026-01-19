@@ -1,5 +1,5 @@
 /**
- * クラス名：	OrderInputDisplayDBAccess
+ * クラス名：	ItemInputDisplayDBAccess
  * 概要　　：	注文情報入力画面表示DAO
  * 作成者名：	ウー
  * 作成日　：   2025/12/02

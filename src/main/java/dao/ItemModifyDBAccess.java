@@ -1,3 +1,11 @@
+/**
+ * クラス名：	ItemModifyDisplayDBAccess
+ * 概要　　：	商品情報更新DAO
+ * 作成者名：	ウー
+ * 作成日　：	2025/01/16
+ * 修正者名：	
+ * 修正日　：
+ */
 package dao;
 
 import java.sql.Connection;

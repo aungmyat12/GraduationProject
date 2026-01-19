@@ -1,8 +1,8 @@
 /**
- * クラス名：	CustomerModifyDBAccess
- * 概要　　：	顧客情報変更DAO
+ * クラス名：	CustomerAddDBAccess
+ * 概要　　：	顧客情報登録DAO
  * 作成者名：	ウー
- * 作成日　：	2026/01/09
+ * 作成日　：	2026/01/15
  * 修正者名：	
  * 修正日　：
  */
@@ -22,7 +22,7 @@ public class CustomerAddDBAccess extends ControlDBAccess {
 		Connection con = createConnection();
 		// SQL実行用PreparedStatement
 		PreparedStatement pstmt = null;
-		// 更新件数
+		// 登録件数
 		int count = 0;
 
 		try {
