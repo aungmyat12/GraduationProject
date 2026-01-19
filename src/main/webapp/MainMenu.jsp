@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" %>
+<%@ page import="model.User" %>
+<%
+    User loginUser = (User) session.getAttribute("loginUser");
+%>
 
 <!DOCTYPE html>
 <html lang="ja" class="h-100 overflow-y-scroll">
@@ -15,15 +19,36 @@
 
 <body class="d-flex h-100 text-center text-dark">
 	<div class="position-fixed top-0 end-0 m-3">
-		<form action="KiddaLaController" method="post" class="d-inline">
-			<input type="hidden" name="command" value="LoginDisplay">
-			<button class="btn btn-primary me-2">ログイン</button>
-		</form>
-	
-		<form action="KiddaLaController" method="post" class="d-inline">
-			<input type="hidden" name="command" value="RegisterDisplay">
-			<button class="btn btn-warning">新規登録</button>
-		</form>
+		<% if (loginUser == null) { %>
+		
+		    <!-- 未ログイン -->
+		    <form action="KiddaLaController" method="post" class="d-inline">
+		        <input type="hidden" name="command" value="LoginDisplay">
+		        <button class="btn btn-primary me-2">ログイン</button>
+		    </form>
+		
+		    <form action="KiddaLaController" method="post" class="d-inline">
+		        <input type="hidden" name="command" value="RegisterDisplay">
+		        <button class="btn btn-warning">新規登録</button>
+		    </form>
+		
+		<% } else { %>
+		
+		  <div class="d-flex">
+		  	<button type="button" class="btn btn-primary">
+				  <%=  loginUser.getName() %> 
+			</button>
+		
+	      <form action="KiddaLaController" method="post" class="px-3">
+	        <input type="hidden" name="command" value="Logout">
+	        <button type="submit"
+	                class="btn btn-danger btn-sm w-100">
+	          ログアウト
+	        </button>
+	      </form>
+		  </div>
+
+		<% } %>
 	</div>
 	<div class="d-flex w-100 mx-auto flex-column">
 		<header class="mb-auto">

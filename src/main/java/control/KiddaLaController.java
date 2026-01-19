@@ -27,20 +27,24 @@ import action.CustomerModifyAction;
 import action.CustomerSearchAction;
 import action.DeliveryCompleteAction;
 import action.DeliveryConfirmAction;
+import action.GoogleLoginAction;
 import action.ItemAddAction;
 import action.ItemControlAction;
 import action.ItemDeleteAction;
 import action.ItemInputDisplayAction;
 import action.ItemMenuDisplayAction;
 import action.ItemModifyAction;
+import action.LoginAction;
 import action.OrderInputDisplayAction;
 import action.OrderRegisterAction;
 import action.RegisterAction;
 import model.Customer;
+import model.GoogleUser;
 import model.Item;
 import model.OrderControlUtility;
 import model.OrderDetail;
 import model.User;
+import service.GoogleOAuthService;
 
 @WebServlet("/KiddaLaController")
 public class KiddaLaController extends HttpServlet {
@@ -103,13 +107,99 @@ public class KiddaLaController extends HttpServlet {
 				    request.setAttribute("errorMsg",
 				        result == -1 ? "このメールアドレスはすでに登録されています。" : "登録に失敗しました。");
 				    request.setAttribute("userInput", user);  // requestスコープに入れる
-				    nextPage = "Register.jsp";  // forward
+		            nextPage = "KiddaLaController?command=RegisterDisplay";
 				}
 			} catch (Exception e) {
 				request.setAttribute("errorMsg", e.getMessage());
 				nextPage = "Error.jsp";
 			}
 			break;
+		case "LoginDisplay":
+		    // ログイン画面表示
+		    nextPage = "Login.jsp";
+		    break;
+		case "Login":
+		    try {
+		        // 入力値取得
+		        String email = request.getParameter("email");
+		        String password = request.getParameter("password");
+
+		        // User オブジェクト生成
+		        User user = new User();
+		        user.setEmail(email);
+		        user.setPassword(password);
+
+		        // LoginAction 実行
+		        LoginAction loginAction = new LoginAction();
+		        User loginUser = loginAction.execute(user);
+
+		        if (loginUser != null) {
+		            // ログイン成功
+		            session = request.getSession();
+		            session.setAttribute("loginUser", loginUser);
+
+		            // メインメニューへ
+		            nextPage = "MainMenu.jsp";
+		        } else {
+		            // ログイン失敗
+		            request.setAttribute("errorMsg", "メールアドレスまたはパスワードが正しくありません。");
+		            request.setAttribute("userInput", user);
+		            nextPage = "KiddaLaController?command=LoginDisplay";
+		        }
+
+		    } catch (Exception e) {
+		        request.setAttribute("errorMsg", e.getMessage());
+		        nextPage = "Error.jsp";
+		    }
+		    break;
+		case "GoogleLogin":
+		    // Google OAuth の認証URLへリダイレクト
+			String clientId = System.getenv("GOOGLE_CLIENT_ID");
+			String redirectUri = System.getenv("GOOGLE_REDIRECT_URI");
+
+		    String googleAuthUrl =
+		        "https://accounts.google.com/o/oauth2/v2/auth"
+		        + "?response_type=code"
+		        + "&client_id=" + clientId
+		        + "&scope=openid%20email%20profile"
+		        + "&redirect_uri=" + redirectUri;
+
+		    response.sendRedirect(googleAuthUrl);
+		    return;
+		case "GoogleCallback":
+		    try {
+		        // Googleから返ってくるのは code
+		        String code = request.getParameter("code");
+
+		        GoogleOAuthService service = new GoogleOAuthService();
+		        GoogleUser googleUser = service.getUserInfo(code);
+
+		        GoogleLoginAction action = new GoogleLoginAction();
+		        User user = action.execute(
+		            googleUser.getEmail(),
+		            googleUser.getName()
+		        );
+
+		        session = request.getSession();
+		        session.setAttribute("loginUser", user);
+
+		        nextPage = "MainMenu.jsp";
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        request.setAttribute("errorMsg", "Googleログインに失敗しました");
+		        nextPage = "Login.jsp";
+		    }
+		    break;
+
+
+
+
+		case "Logout":
+            session = request.getSession();
+		    session.invalidate();
+		    nextPage = "MainMenu.jsp";
+		    break;
 		
 		case "CustomerSearchDisplay":
 			// 次画面に"CustomerSearch.jsp"を設定する
@@ -367,8 +457,9 @@ public class KiddaLaController extends HttpServlet {
 		        nextPage = "ItemControl.jsp";
 
 		        String itemId = request.getParameter("itemId");
+		        String modeParam = request.getParameter("mode");
 
-		        if (itemId != null) {
+		        if (itemId != null && "edit".equals(modeParam)) {
 		            // 編集モード
 		            ItemInputDisplayAction action =
 		                    new ItemInputDisplayAction();
@@ -416,7 +507,6 @@ public class KiddaLaController extends HttpServlet {
 
 		        ItemAddAction action = new ItemAddAction();
 		        int result = action.execute(item);
-
 		        if (result == 1) {
 		            session = request.getSession();
 		            session.setAttribute("msgFlag", "created");
@@ -427,13 +517,16 @@ public class KiddaLaController extends HttpServlet {
 		            return;
 
 		        } else if (result == -1) {
-		            // ★ 重複エラー
 		            request.setAttribute("errorMsg", "この商品IDはすでに登録されています。");
 		            request.setAttribute("item", item);
 		            request.setAttribute("mode", "add");
 
-		            // ★ Display に forward
-		            nextPage = "KiddaLaController?command=ItemControlDisplay";
+		            // ★ 商品一覧も必ずセット
+		            ItemControlAction itemControlAction = new ItemControlAction();
+		            String[][] itemData = itemControlAction.execute();
+		            request.setAttribute("itemData", itemData);
+
+		            nextPage = "ItemControl.jsp"; // forward
 		        }
 
 		    } catch (Exception e) {
@@ -459,12 +552,18 @@ public class KiddaLaController extends HttpServlet {
 		            session.setAttribute("msgFlag", "modified");
 
 		            nextPage = "KiddaLaController?command=ItemControlDisplay";
-		            return;
 
 		        }  else {
-		            request.setAttribute("errorMsg", "商品情報の更新に失敗しました。");
+		        	request.setAttribute("errorMsg", "商品情報の更新に失敗しました。");
 		            request.setAttribute("item", item);
-		            nextPage = "ItemControl.jsp";
+		            request.setAttribute("mode", "edit");
+
+		            // ★ 商品一覧を必ず再セット
+		            ItemControlAction itemControlAction = new ItemControlAction();
+		            String[][] itemData = itemControlAction.execute();
+		            request.setAttribute("itemData", itemData);
+
+		            nextPage = "ItemControl.jsp"; // forward
 		        }
 
 		    } catch (Exception e) {

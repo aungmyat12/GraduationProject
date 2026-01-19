@@ -4,10 +4,11 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-	private int id;
+	private int userId;
 	private String name;
 	private String email;
 	private String password;
+	private String provider;
 
 	public User() {
 	}
@@ -18,19 +19,20 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public User(int id, String name, String email, String password) {
-		this.id = id;
+	public User(int userId, String name, String email, String password, String provider) {
+		this.userId = userId;
 		this.name = name;
 		this.email = email;
 		this.password = password;
+		this.provider = provider;
 	}
 
-	public int getId() {
-		return id;
+	public int getUserId() {
+		return userId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public String getName() {
@@ -55,5 +57,12 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getProvider() {
+		return provider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
 	}
 }
